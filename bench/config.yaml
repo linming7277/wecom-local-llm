@@ -1,0 +1,34 @@
+# 本机手动压测参数。命令行传入的同名参数会覆盖这里。
+# 未拉取的模型只跳过，不会执行 ollama pull。
+
+models:
+  - qwen3:4b-instruct-2507-q4_K_M
+  - qwen3:8b
+  - qwen3:14b
+# 只在传入 --include-heavy 时运行，并且固定 num_ctx=4096、concurrency=1。
+heavy_models:
+  - qwen3.8:27b
+num_ctx:
+  - 4096
+  - 8192
+  - 16384
+concurrency:
+  - 1
+  - 2
+  - 4
+think:
+  - false
+  - true
+repeats: 3
+temperature: 0
+seed: 42
+# 固定生成上限，避免单次回答把整组压测拖住。速度仍以 Ollama 的 eval_count 为准。
+num_predict: 512
+# 每次请求在 system 或 user 消息前加一行 [req:uuid]，避免 Ollama 复用 KV 缓存。
+bust_cache: true
+timeout_seconds: 240
+keep_alive: 10m
+base_url: http://127.0.0.1:11434
+prompts:
+  - short
+  - long
